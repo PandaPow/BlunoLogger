@@ -23,13 +23,21 @@ import java.lang.System;
 import java.text.SimpleDateFormat;
 //)
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+
+
 public class MainActivity  extends BlunoLibrary {
 	private Button buttonScan;
 	private Button buttonSerialSend;
 	private EditText serialSendText;
 	private TextView serialReceivedText;
+
 	private SimpleDateFormat dateFormat;
 	private String storagePath;
+	private LineGraphSeries series;
+    private double lastXValue = 0d;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,8 @@ public class MainActivity  extends BlunoLibrary {
 				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
 			}
 		});
+		GraphView graph = (GraphView) findViewById(R.id.serialGraphView);
+		graph.addSeries(series);
 	}
 
 	protected void onResume(){
@@ -129,6 +139,9 @@ public class MainActivity  extends BlunoLibrary {
         appendLog(theString);
 		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
 		((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
+        lastXValue += 1d;
+        double newYValue= Double.parseDouble(theString);
+        series.appendData(new DataPoint(lastXValue, newYValue), true, 300);
 	}
 
 	public String getTimestamp(){
