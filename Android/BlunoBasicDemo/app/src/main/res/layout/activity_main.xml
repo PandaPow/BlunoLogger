@@ -24,11 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:textSize="10sp"
-            android:layout_below="@+id/editText2"
-            android:layout_alignStart="@+id/editText2"
-            android:layout_alignEnd="@+id/serialSendText"
-            android:layout_alignParentBottom="true" />
+            android:textSize="12sp" />
     </ScrollView>
 
     <Button
@@ -36,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/serialSendText"
-        android:layout_alignRight="@+id/serialSendText"
+        android:layout_alignEnd="@+id/serialSendText"
         android:text="Send Data" />
 
     <TextView
@@ -63,13 +59,13 @@
         android:inputType="text"
         android:text="Data sending Area"
         android:textColor="#999999"
-        android:textSize="20dip" />
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/serialSendText"
+        android:layout_alignStart="@+id/serialSendText"
         android:layout_alignParentTop="true"
         android:text="Scan" />
 
