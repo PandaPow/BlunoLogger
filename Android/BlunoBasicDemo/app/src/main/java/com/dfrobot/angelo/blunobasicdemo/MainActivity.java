@@ -1,27 +1,43 @@
 package com.dfrobot.angelo.blunobasicdemo;
 
+// From original app(
 import android.content.Context;
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+//)
+// For logging to a file(
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.FileWriter;
+// Calendar object for timestamp
+import java.util.Calendar;
+import java.lang.System;
+import java.text.SimpleDateFormat;
+//)
 
 public class MainActivity  extends BlunoLibrary {
 	private Button buttonScan;
 	private Button buttonSerialSend;
 	private EditText serialSendText;
 	private TextView serialReceivedText;
+	private SimpleDateFormat dateFormat;
+	private String storagePath;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
         onCreateProcess();														//onCreate Process by BlunoLibrary
-
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+        storagePath = Environment.getExternalStorageDirectory().getPath();
 
         serialBegin(115200);													//set the Uart Baudrate on BLE chip to 115200
 
@@ -108,9 +124,47 @@ public class MainActivity  extends BlunoLibrary {
 	@Override
 	public void onSerialReceived(String theString) {							//Once connection data received, this function will be called
 		// TODO Auto-generated method stub
+        theString = getTimestamp() + "," + theString;
 		serialReceivedText.append(theString);							//append the text into the EditText
+        appendLog(theString);
 		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
 		((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
 	}
 
+	public String getTimestamp(){
+	    long time = System.currentTimeMillis();
+	    return dateFormat.format(time);
+                // yyyy/MM/dd,HH:mm
+    }
+    public void appendLog(String text)
+    {
+
+        File logFile = new File(storagePath+"/bluno.txt");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 }
