@@ -16,7 +16,7 @@
         android:id="@+id/scrollView"
         android:layout_below="@+id/editText2"
         android:layout_alignStart="@+id/editText2"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/serialGraphView"
         android:layout_alignEnd="@+id/serialSendText">
 
         <TextView
@@ -26,6 +26,14 @@
             android:ems="10"
             android:textSize="12sp" />
     </ScrollView>
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="250dip"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/serialGraphView"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
     <Button
         android:id="@+id/buttonSerialSend"

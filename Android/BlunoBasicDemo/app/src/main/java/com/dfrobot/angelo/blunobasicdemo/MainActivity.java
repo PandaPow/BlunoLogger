@@ -46,6 +46,7 @@ public class MainActivity  extends BlunoLibrary {
         onCreateProcess();														//onCreate Process by BlunoLibrary
         dateFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
         storagePath = Environment.getExternalStorageDirectory().getPath();
+        series = new LineGraphSeries<DataPoint>();
 
         serialBegin(115200);													//set the Uart Baudrate on BLE chip to 115200
 
@@ -73,7 +74,11 @@ public class MainActivity  extends BlunoLibrary {
 				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
 			}
 		});
-		GraphView graph = (GraphView) findViewById(R.id.serialGraphView);
+		GraphView graph = findViewById(R.id.serialGraphView);
+		graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(60);
+        graph.getViewport().setScalable(true);
 		graph.addSeries(series);
 	}
 
@@ -134,14 +139,19 @@ public class MainActivity  extends BlunoLibrary {
 	@Override
 	public void onSerialReceived(String theString) {							//Once connection data received, this function will be called
 		// TODO Auto-generated method stub
-        theString = getTimestamp() + "," + theString;
-		serialReceivedText.append(theString);							//append the text into the EditText
-        appendLog(theString);
-		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
-		((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
-        lastXValue += 1d;
+        // Add data point to graph
         double newYValue= Double.parseDouble(theString);
         series.appendData(new DataPoint(lastXValue, newYValue), true, 300);
+        ((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
+        lastXValue += 1d;
+        // Format datapoint with a timestamp
+        theString = getTimestamp() + "," + theString;
+        //append the text into the EditText
+		serialReceivedText.append(theString);
+		// Append to text file
+        appendLog(theString);
+		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
+
 	}
 
 	public String getTimestamp(){
