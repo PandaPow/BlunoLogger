@@ -18,9 +18,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileWriter;
 // Calendar object for timestamp
-import java.util.Calendar;
 import java.lang.System;
 import java.text.SimpleDateFormat;
+//)
+//For the foreground notification(
+import android.app.PendingIntent;
+import android.app.Notification;
+
 //)
 
 import com.jjoe64.graphview.GraphView;
@@ -38,28 +42,29 @@ public class MainActivity  extends BlunoLibrary {
 	private String storagePath;
 	private LineGraphSeries series;
     private double lastXValue = 0d;
+    private static final int NOTIFICATION_ID = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
         onCreateProcess();														//onCreate Process by BlunoLibrary
+        // Set default date format for text log
         dateFormat = new SimpleDateFormat("yyyy/MM/dd,HH:mm:ss");
+        // Set default directory for text log
         storagePath = Environment.getExternalStorageDirectory().getPath();
+        // Create a new series object of DataPoints
         series = new LineGraphSeries<DataPoint>();
 
         serialBegin(115200);													//set the Uart Baudrate on BLE chip to 115200
 
         serialReceivedText=(TextView) findViewById(R.id.serialReveicedText);	//initial the EditText of the received data
         serialSendText=(EditText) findViewById(R.id.serialSendText);			//initial the EditText of the sending data
-
         buttonSerialSend = (Button) findViewById(R.id.buttonSerialSend);		//initial the button for sending the data
         buttonSerialSend.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
 				serialSend(serialSendText.getText().toString());				//send the data to the BLUNO
 			}
 		});
@@ -69,15 +74,10 @@ public class MainActivity  extends BlunoLibrary {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
 				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
 			}
 		});
 		GraphView graph = findViewById(R.id.serialGraphView);
-		graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(60);
         graph.getViewport().setScalable(true);
 		graph.addSeries(series);
 	}
@@ -141,7 +141,7 @@ public class MainActivity  extends BlunoLibrary {
 		// TODO Auto-generated method stub
         // Add data point to graph
         double newYValue= Double.parseDouble(theString);
-        series.appendData(new DataPoint(lastXValue, newYValue), true, 300);
+        series.appendData(new DataPoint(lastXValue, newYValue), false, 300);
         ((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
         lastXValue += 1d;
         // Format datapoint with a timestamp
@@ -151,7 +151,6 @@ public class MainActivity  extends BlunoLibrary {
 		// Append to text file
         appendLog(theString);
 		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
-
 	}
 
 	public String getTimestamp(){
@@ -159,35 +158,27 @@ public class MainActivity  extends BlunoLibrary {
 	    return dateFormat.format(time);
                 // yyyy/MM/dd,HH:mm
     }
-    public void appendLog(String text)
-    {
+    public void appendLog(String text) {
 
-        File logFile = new File(storagePath+"/bluno.txt");
-        if (!logFile.exists())
-        {
-            try
-            {
+        File logFile = new File(storagePath + "/bluno.txt");
+        if (!logFile.exists()) {
+            try {
                 logFile.createNewFile();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        try
-        {
+        try {
             //BufferedWriter for performance, true to set append to file flag
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
             buf.append(text);
             buf.newLine();
             buf.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
+
 }

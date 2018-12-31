@@ -28,12 +28,11 @@
     </ScrollView>
 
     <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
+        android:layout_width="310dp"
         android:layout_height="250dip"
         android:layout_alignParentBottom="true"
-        android:id="@+id/serialGraphView"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+        android:layout_centerHorizontal="true"
+        android:id="@+id/serialGraphView" />
 
     <Button
         android:id="@+id/buttonSerialSend"
