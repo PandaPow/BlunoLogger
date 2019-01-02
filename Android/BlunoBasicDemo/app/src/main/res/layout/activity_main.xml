@@ -15,65 +15,59 @@
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
         android:layout_below="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
+        android:layout_alignStart="@+id/serialGraphView"
         android:layout_above="@+id/serialGraphView"
-        android:layout_alignEnd="@+id/serialSendText">
+        android:layout_alignEnd="@+id/serialGraphView">
 
         <TextView
             android:id="@+id/serialReveicedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </ScrollView>
 
     <com.jjoe64.graphview.GraphView
-        android:layout_width="310dp"
+        android:id="@+id/serialGraphView"
+        android:layout_width="match_parent"
         android:layout_height="250dip"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/serialGraphView" />
-
-    <Button
-        android:id="@+id/buttonSerialSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/serialSendText"
-        android:layout_alignEnd="@+id/serialSendText"
-        android:text="Send Data" />
-
-    <TextView
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/serialSendText"
-        android:layout_below="@+id/serialSendText"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:text="Received Data:"
-        android:textSize="25sp" />
-
-    <EditText
-        android:id="@+id/serialSendText"
-        android:layout_width="310dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/buttonScan"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:background="#555555"
-        android:bufferType="editable"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Data sending Area"
-        android:textColor="#999999"
-        android:textSize="20sp" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/buttonScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/serialSendText"
         android:layout_alignParentTop="true"
-        android:text="Scan" />
+        android:text="@string/scan"/>
+
+    <Button
+        android:id="@+id/buttonSerialSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/buttonScan"
+        android:text="@string/send_data"/>
+
+    <ToggleButton
+        android:id="@+id/buttonScreenOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textOff="@string/screen_on"
+        android:textOn="@string/screen_on"/>
+
+    <TextView
+        android:id="@+id/editText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonScan"
+        android:layout_alignStart="@+id/buttonScan"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:text="@string/textview_init_text"
+        android:textSize="22sp" />
 
 </RelativeLayout>

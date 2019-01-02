@@ -8,7 +8,8 @@ import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 //)
@@ -21,10 +22,8 @@ import java.io.FileWriter;
 import java.lang.System;
 import java.text.SimpleDateFormat;
 //)
-//For the foreground notification(
-import android.app.PendingIntent;
-import android.app.Notification;
-
+//For keeping the app awake(
+import android.view.WindowManager;
 //)
 
 import com.jjoe64.graphview.GraphView;
@@ -35,7 +34,7 @@ import com.jjoe64.graphview.series.DataPoint;
 public class MainActivity  extends BlunoLibrary {
 	private Button buttonScan;
 	private Button buttonSerialSend;
-	private EditText serialSendText;
+	private ToggleButton buttonScreen;
 	private TextView serialReceivedText;
 
 	private SimpleDateFormat dateFormat;
@@ -59,13 +58,12 @@ public class MainActivity  extends BlunoLibrary {
         serialBegin(115200);													//set the Uart Baudrate on BLE chip to 115200
 
         serialReceivedText=(TextView) findViewById(R.id.serialReveicedText);	//initial the EditText of the received data
-        serialSendText=(EditText) findViewById(R.id.serialSendText);			//initial the EditText of the sending data
         buttonSerialSend = (Button) findViewById(R.id.buttonSerialSend);		//initial the button for sending the data
         buttonSerialSend.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				serialSend(serialSendText.getText().toString());				//send the data to the BLUNO
+				serialSend("");				//send the data to the BLUNO
 			}
 		});
 
@@ -75,6 +73,13 @@ public class MainActivity  extends BlunoLibrary {
 			@Override
 			public void onClick(View v) {
 				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
+			}
+		});
+
+        buttonScreen = (ToggleButton) findViewById(R.id.buttonScreenOn);					//initial the button for scanning the BLE device
+		buttonScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				buttonScreenOnCheckedProcess(isChecked);
 			}
 		});
 		GraphView graph = findViewById(R.id.serialGraphView);
@@ -133,6 +138,16 @@ public class MainActivity  extends BlunoLibrary {
 			break;
 		default:
 			break;
+		}
+	}
+
+	public void buttonScreenOnCheckedProcess(boolean isChecked){
+		if (isChecked) {
+			// The toggle is enabled
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		} else {
+			// The toggle is disabled
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 	}
 

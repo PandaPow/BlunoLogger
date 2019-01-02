@@ -20,4 +20,15 @@
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
     <string name="action_settings">Action settings</string>
+
+    <!--UI Text-->
+    <string name="send_data">Send Data</string>
+    <string name="textview_init_text">RECEIVED DATA: </string>
+    <string name="scan">Scan</string>
+    <string name="screen_on">Keep Screen On</string>
+
+    <!--UI Color-->
+    <color name="button_background">#616161</color>
+    <color name="string_text">#AEB6BF</color>
+    <color name="button_text">#FFFFFF</color>
 </resources>
