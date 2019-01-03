@@ -40,7 +40,7 @@ public class MainActivity  extends BlunoLibrary {
 	private Button buttonSerialSend;
 	private ToggleButton buttonScreen;
 	private TextView serialReceivedText;
-    private GraphView graph;
+    private CustomGraph graph;
 	//Default date format for timestamp
 	private SimpleDateFormat dateFormat;
 	//Storage path where text file will end up
@@ -116,6 +116,7 @@ public class MainActivity  extends BlunoLibrary {
         // Set axis bounds
         graph.getViewport().setScalable(true);
         graph.getViewport().setScalableY(true);
+        graph.setDefaultXBounds(0,2*secOffset+1);
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(2*secOffset+1);
         //Set titles for legend
@@ -329,5 +330,4 @@ public class MainActivity  extends BlunoLibrary {
             e.printStackTrace();
         }
     }
-
 }

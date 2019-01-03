@@ -28,7 +28,7 @@
             android:textSize="12sp" />
     </ScrollView>
 
-    <com.jjoe64.graphview.GraphView
+    <com.dfrobot.angelo.blunobasicdemo.CustomGraph
         android:id="@+id/serialGraphView"
         android:layout_width="match_parent"
         android:layout_height="300dip"
