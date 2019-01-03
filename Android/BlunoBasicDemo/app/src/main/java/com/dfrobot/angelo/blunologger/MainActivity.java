@@ -1,4 +1,5 @@
-package com.dfrobot.angelo.blunobasicdemo;
+package com.dfrobot.angelo.blunologger;
+// Original package: com.dfrobot.angelo.blunobasicdemo;
 
 // From original app(
 import android.annotation.SuppressLint;
@@ -28,7 +29,7 @@ import android.view.WindowManager;
 //For visualizing the graph(
 import java.util.Iterator;
 import android.graphics.Color;
-import com.jjoe64.graphview.GraphView;
+
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.LegendRenderer;

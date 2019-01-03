@@ -1,7 +1,6 @@
-package com.dfrobot.angelo.blunobasicdemo;
+package com.dfrobot.angelo.blunologger;
 
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.Viewport;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -55,6 +54,7 @@ public class CustomGraph extends GraphView {
             return true;
         }
 
+        // On double tap, restore default viewport X bounds
         @Override
         public boolean onDoubleTap(MotionEvent event){
             if(defaultMinX < defaultMaxX){
