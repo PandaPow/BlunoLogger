@@ -31,7 +31,8 @@
     <com.jjoe64.graphview.GraphView
         android:id="@+id/serialGraphView"
         android:layout_width="match_parent"
-        android:layout_height="250dip"
+        android:layout_height="300dip"
+        android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
@@ -56,8 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:checked="true"
         android:textOff="@string/screen_on"
-        android:textOn="@string/screen_on"/>
+        android:textOn="@string/screen_on" />
 
     <TextView
         android:id="@+id/editText2"
@@ -65,9 +67,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonScan"
         android:layout_alignStart="@+id/buttonScan"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:text="@string/textview_init_text"
-        android:textSize="22sp" />
+        android:textSize="16sp" />
 
 </RelativeLayout>

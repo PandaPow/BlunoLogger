@@ -6,7 +6,10 @@
     <string name="label_device_address">Device address:</string>
     <string name="label_state">State:</string>
     <string name="no_data">No data</string>
+    <string name="connecting">Connecting</string>
     <string name="connected">Connected</string>
+    <string name="scanning">Scanning</string>
+    <string name="is_disconnecting">isDisconnected</string>
     <string name="disconnected">Disconnected</string>
     <string name="title_devices">BLE Device Scan</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
@@ -22,7 +25,7 @@
     <string name="action_settings">Action settings</string>
 
     <!--UI Text-->
-    <string name="send_data">Send Data</string>
+    <string name="send_data">Init Data</string>
     <string name="textview_init_text">RECEIVED DATA: </string>
     <string name="scan">Scan</string>
     <string name="screen_on">Keep Screen On</string>
@@ -30,7 +33,7 @@
     <string name="minutes_title">Minutes (averaged)</string>
     <string name="hor_title">Time</string>
     <string name="vert_title">Data</string>
-    <string name="graph_title">Received Data</string>
+    <string name="graph_title">RECENT DATA</string>
 
 
     <!--UI Color-->

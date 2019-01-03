@@ -1,6 +1,7 @@
 package com.dfrobot.angelo.blunobasicdemo;
 
 // From original app(
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Environment;
@@ -34,23 +35,32 @@ import com.jjoe64.graphview.LegendRenderer;
 //)
 
 public class MainActivity  extends BlunoLibrary {
+    //UI objects
 	private Button buttonScan;
 	private Button buttonSerialSend;
 	private ToggleButton buttonScreen;
 	private TextView serialReceivedText;
+    private GraphView graph;
+	//Default date format for timestamp
 	private SimpleDateFormat dateFormat;
+	//Storage path where text file will end up
 	private String storagePath;
-	private GraphView graph;
-	private static int pointMax = 60;
+	//Number of seconds offset between series - minimum second points displayed at all times after initialization
+	private static int secOffset = 60;
+	//Maximum minutes to display
 	private static int minuteMax = 480;
+	//Graph displaying objects
+	//Keep two series so the past 60 seconds is always shown on the screen
 	private LineGraphSeries secondSeriesA;
     private LineGraphSeries secondSeriesB;
 	private LineGraphSeries minuteSeries;
     private double secCounter = 0d;
     private double minCounter = 0d;
+    //Used to track how data is added to graph
     private int state = 0;
 	
-	@Override
+	@SuppressLint("SimpleDateFormat")
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -67,18 +77,18 @@ public class MainActivity  extends BlunoLibrary {
         //set the Uart Baudrate on BLE chip to 115200
         serialBegin(115200);
         //initial the EditText of the received data
-        serialReceivedText=(TextView) findViewById(R.id.serialReveicedText);
+        serialReceivedText = findViewById(R.id.serialReveicedText);
         //initial the button for sending the data
-        buttonSerialSend = (Button) findViewById(R.id.buttonSerialSend);
+        buttonSerialSend = findViewById(R.id.buttonSerialSend);
         buttonSerialSend.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
                 //send the data to the BLUNO
-				serialSend("");
+				serialSend("init");
 			}
 		});
         //initial the button for scanning the BLE device
-        buttonScan = (Button) findViewById(R.id.buttonScan);
+        buttonScan = findViewById(R.id.buttonScan);
         buttonScan.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -88,12 +98,14 @@ public class MainActivity  extends BlunoLibrary {
 		});
 
         //initial the button for keeping the device from falling asleep
-        buttonScreen = (ToggleButton) findViewById(R.id.buttonScreenOn);
+        buttonScreen = findViewById(R.id.buttonScreenOn);
 		buttonScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				buttonScreenOnCheckedProcess(isChecked);
 			}
 		});
+		//Keep awake by default
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		// Set up graph
         initialize_graph();
 
@@ -103,8 +115,9 @@ public class MainActivity  extends BlunoLibrary {
         graph = findViewById(R.id.serialGraphView);
         // Set axis bounds
         graph.getViewport().setScalable(true);
+        graph.getViewport().setScalableY(true);
         graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(2 * pointMax);
+        graph.getViewport().setMaxX(2*secOffset+1);
         //Set titles for legend
         secondSeriesA.setTitle(getString(R.string.seconds_title));
         secondSeriesB.setTitle(getString(R.string.seconds_title));
@@ -119,10 +132,12 @@ public class MainActivity  extends BlunoLibrary {
         //Set titles
         graph.getGridLabelRenderer().setHorizontalAxisTitle(getString(R.string.hor_title));
         graph.getGridLabelRenderer().setVerticalAxisTitle(getString(R.string.vert_title));
+        graph.setTitle(getString(R.string.graph_title));
+        graph.setTitleTextSize(40);
         //Add series to graph
         graph.addSeries(secondSeriesA);
         graph.addSeries(minuteSeries);
-        graph.getGridLabelRenderer().setPadding(32);
+        graph.getGridLabelRenderer().setPadding(28);
     }
 
 	protected void onResume(){
@@ -163,19 +178,19 @@ public class MainActivity  extends BlunoLibrary {
 		switch (theConnectionState) {
         //Four connection states
 		case isConnected:
-			buttonScan.setText("Connected");
+			buttonScan.setText(getString(R.string.connected));
 			break;
 		case isConnecting:
-			buttonScan.setText("Connecting");
+			buttonScan.setText(getString(R.string.connecting));
 			break;
 		case isToScan:
-			buttonScan.setText("Scan");
+			buttonScan.setText(getString(R.string.scan));
 			break;
 		case isScanning:
-			buttonScan.setText("Scanning");
+			buttonScan.setText(getString(R.string.scanning));
 			break;
 		case isDisconnecting:
-			buttonScan.setText("isDisconnecting");
+			buttonScan.setText(getString(R.string.is_disconnecting));
 			break;
 		default:
 			break;
@@ -213,47 +228,66 @@ public class MainActivity  extends BlunoLibrary {
 		secCounter += 1d;
 		switch (state) {
             case 0:
-                secondSeriesA.appendData(new DataPoint(secCounter,value),false,2*pointMax,false);
-                if((int)secCounter == pointMax){
+                secondSeriesA.appendData(new DataPoint(secCounter,value),false,3* secOffset,false);
+                if((int)secCounter == secOffset){
                     minCounter += 1d;
                     minuteSeries.appendData(new DataPoint(minCounter,averageSeries(secondSeriesA)),false,minuteMax,false);
                     secCounter = 0;
                     state = 2;
                 }
+                break;
             case 1:
-                secondSeriesA.appendData(new DataPoint(secCounter,value),false,2*pointMax,false);
-                secondSeriesB.appendData(new DataPoint(secCounter +60,value),false,2*pointMax,false);
-                if ((int)secCounter == pointMax){
+                secondSeriesB.appendData(new DataPoint(secCounter+ secOffset,value),false,3* secOffset,false);
+                secondSeriesA.appendData(new DataPoint(secCounter,value),false,3* secOffset,false);
+                graph.onDataChanged(true,true);
+                if ((int)secCounter == secOffset){
                     minCounter += 1d;
-                    minuteSeries.appendData(new DataPoint(minCounter,averageSeries(secondSeriesA)),false,minuteMax,false);
+                    boolean scrolltoEnd = false;
+                    if (minCounter > 2* secOffset){
+                        scrolltoEnd = true;
+                    }
+                    minuteSeries.appendData(new DataPoint(minCounter,averageSeries(secondSeriesA)),scrolltoEnd,minuteMax,false);
                     secCounter = 0;
                     state = 3;
                 }
+                break;
             case 2:
-                secondSeriesB.appendData(new DataPoint(secCounter,value),false,2*pointMax,false);
-                secondSeriesA.appendData(new DataPoint(secCounter +60,value),false,2*pointMax,false);
-                if ((int)secCounter == pointMax){
+                secondSeriesA.appendData(new DataPoint(secCounter+ secOffset,value),false,3* secOffset,false);
+                secondSeriesB.appendData(new DataPoint(secCounter,value),false,3* secOffset,false);
+                graph.onDataChanged(true,true);
+                if ((int)secCounter == secOffset){
                     minCounter += 1d;
-                    minuteSeries.appendData(new DataPoint(minCounter,averageSeries(secondSeriesB)),false,minuteMax,false);
+                    boolean scrolltoEnd = false;
+                    if (minCounter > 2* secOffset){
+                        scrolltoEnd = true;
+                    }
+                    minuteSeries.appendData(new DataPoint(minCounter,averageSeries(secondSeriesB)),scrolltoEnd,minuteMax,false);
                     secCounter = 0;
                     state = 4;
                 }
+                break;
             case 3:
-                secondSeriesA.appendData(new DataPoint(secCounter +60,value),false,2*pointMax,false);
+                secondSeriesA.appendData(new DataPoint(secCounter+ secOffset,value),false,3* secOffset,false);
+                graph.onDataChanged(true,true);
                 graph.removeSeries(secondSeriesB);
                 graph.addSeries(secondSeriesA);
+                graph.onDataChanged(true,true);
                 DataPoint[] newSeriesB = new DataPoint[1];
                 newSeriesB[0] = new DataPoint(secCounter,value);
                 secondSeriesB.resetData(newSeriesB);
                 state = 2;
+                break;
             case 4:
-                secondSeriesB.appendData(new DataPoint(secCounter +60,value),false,2*pointMax,false);
+                secondSeriesB.appendData(new DataPoint(secCounter+ secOffset,value),false,3* secOffset,false);
+                graph.onDataChanged(true,true);
                 graph.removeSeries(secondSeriesA);
                 graph.addSeries(secondSeriesB);
+                graph.onDataChanged(true,true);
                 DataPoint[] newSeriesA = new DataPoint[1];
                 newSeriesA[0] = new DataPoint(secCounter,value);
-                secondSeriesB.resetData(newSeriesA);
+                secondSeriesA.resetData(newSeriesA);
                 state = 1;
+                break;
         }
 	}
 
@@ -262,11 +296,10 @@ public class MainActivity  extends BlunoLibrary {
 	    double count = 0;
 	    double sum = 0;
 	    while(values.hasNext()){
-	        sum += (double)values.next();
-	        values.remove();
+	        sum += ((DataPoint)values.next()).getY();
 	        count += 1;
         }
-        return sum/(double)count;
+        return sum/count;
     }
 
 	public String getTimestamp(){
