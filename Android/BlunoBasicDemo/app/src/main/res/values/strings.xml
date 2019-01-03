@@ -26,6 +26,12 @@
     <string name="textview_init_text">RECEIVED DATA: </string>
     <string name="scan">Scan</string>
     <string name="screen_on">Keep Screen On</string>
+    <string name="seconds_title">Seconds</string>
+    <string name="minutes_title">Minutes (averaged)</string>
+    <string name="hor_title">Time</string>
+    <string name="vert_title">Data</string>
+    <string name="graph_title">Received Data</string>
+
 
     <!--UI Color-->
     <color name="button_background">#616161</color>
